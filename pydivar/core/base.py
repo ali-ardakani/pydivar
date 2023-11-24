@@ -5,7 +5,7 @@ import json
 import tempfile
 import uuid
 from loguru import logger
-from .city_information import CITY_INFORMATION
+from .info import CITY_INFORMATION
 
 class InitialDataScraper:
     URL="https://divar.ir/s/iran"
@@ -53,4 +53,6 @@ class InitialDataScraper:
     def run(self):
         response = self.send_request()
         script_tag = self.parse_html(response)
-        self.extract(script_tag)
+        cities = self.extract(script_tag)
+        
+        return cities
