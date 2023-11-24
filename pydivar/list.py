@@ -65,10 +65,17 @@ class DivarAPI:
     }
 
     @staticmethod
-    def build_url(category, cities, sort=None, method="GET", **kwargs):
+    def build_url(category, cities, sort=None, method="GET", filters={}):
         if method == "GET":
             url = DivarAPI.BASE_URL + "iran/" + CATEGORIES.get(category)
             url += "?cities=" + "%2C".join(cities)
+            if sort:
+                url += "&sort=" + sort
+            if filters:
+                for filter_name, filter_value in filters.items():
+                    if isinstance(filter_value, list):
+                        filter_value = "%2C".join(filter_value)
+                    url += f"&{filter_name}={filter_value}"
         elif method == "POST":
             url = DivarAPI.BASE_URL + "1/" + category
         else:
@@ -76,7 +83,7 @@ class DivarAPI:
         return url
 
     @staticmethod
-    def build_params(category, sort, cities, last_post_date):
+    def build_params(category, sort, cities, last_post_date, filters={}):
         sort = SortValidator.validate(sort)
         category = CategoryValidator.validate(category)
         cities = CitiesValidator.validate(cities)
@@ -85,6 +92,8 @@ class DivarAPI:
         params["json_schema"]["cities"] = cities
         params["json_schema"]["category"]["value"] = category
         params["last-post-date"] = last_post_date
+        for filter_name, filter_value in filters.items():
+                params["json_schema"][filter_name] = {"value": filter_value}
         return params
 
 
@@ -144,7 +153,7 @@ class AdFetcher:
         sort="sort_date",
         cities="__all__",
         _from=int((datetime.now() - timedelta(days=1)).strftime("%s%f")),
-        **kwargs,
+        filters={},
     ):
         """
         Retrieves ads from Divar API based on the specified category, sort order, cities, and other optional parameters.
@@ -154,7 +163,7 @@ class AdFetcher:
         - sort (str, optional): The sort order of the ads. Defaults to 'sort_date'.
         - cities (str, optional): The cities to filter the ads by. Defaults to '__all__'.
         - _from (int, optional): The timestamp indicating the starting point to retrieve ads from. Defaults to 24 hours ago.
-        - **kwargs: Additional optional parameters to be passed to the Divar API.
+        - filters (dict, optional): The filters to apply to the ads. Defaults to {}.
 
         Returns:
         - ads (list): A list of ads retrieved from the Divar API.
@@ -164,15 +173,14 @@ class AdFetcher:
         category = CategoryValidator.validate(category)
         cities = CitiesValidator.validate(cities)
 
-        url = DivarAPI.build_url(category, cities, sort, method="GET", **kwargs)
+        url = DivarAPI.build_url(category, cities, sort, method="GET", filters=filters)
         ads, last_post_date = DivarClient.get(url)
         for ad in ads:
             yield ad
 
-        params = DivarAPI.build_params(category, sort, cities, last_post_date)
-
+        params = DivarAPI.build_params(category, sort, cities, last_post_date, filters=filters)
         while params["last-post-date"] >= _from:
-            url = DivarAPI.build_url(category, cities, sort, method="POST", **kwargs)
+            url = DivarAPI.build_url(category, cities, sort, method="POST", filters=filters)
             ads, is_last_page = DivarClient.post(url, params)
             for ad in ads:
                 yield ad
