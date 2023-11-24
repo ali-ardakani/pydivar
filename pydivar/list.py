@@ -123,6 +123,11 @@ class DivarClient:
         if response.status_code == 200:
             response = response.json()
             return DivarParser.extract_ads(response), response["last_post_date"]
+        elif response.status_code == 404:
+            return [], -1
+        else:
+            time.sleep(5)
+            return DivarClient.get(url)
 
     @staticmethod
     def post(url, params):

@@ -117,5 +117,4 @@ class PostDetailService:
         semaphore = asyncio.Semaphore(maximum_task)
         tasks = [self._get_post_detail(t, semaphore) for t in token]
         ads = loop.run_until_complete(asyncio.gather(*tasks))
-        loop.close()
         return ads
