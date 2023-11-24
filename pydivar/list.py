@@ -117,7 +117,6 @@ class DivarClient:
 
     @staticmethod
     def post(url, params):
-        res = []
         while True:
             response = requests.post(url, json=params)
             if response.status_code == 429:
@@ -174,8 +173,8 @@ class AdFetcher:
 
         while params["last-post-date"] >= _from:
             url = DivarAPI.build_url(category, cities, sort, method="POST", **kwargs)
-            ads_, is_last_page = DivarClient.post(url, params)
-            for ad in ads_:
+            ads, is_last_page = DivarClient.post(url, params)
+            for ad in ads:
                 yield ad
             if is_last_page:
                 break
