@@ -121,7 +121,7 @@ print(post_details)
 from pydivar import PostDetailService, AdFetcher
 
 # Use AdFetcher to get ads
-ads = AdFetcher.get_ads(category="car", sort="cheapest", cities=[5], filters={"brand": "toyota"})
+ads = AdFetcher.get_ads(category="light", sort="sort_date", cities=[16, 5], filters={"body_status": ["some-scratches", "paintless-dent-removal"]})
 
 # Get the tokens of the retrieved ads
 ad_tokens = [ad["token"] for ad in ads]
@@ -132,12 +132,12 @@ post_detail_service = PostDetailService()
 * Concurrently:
 ```python
 # Get details for the retrieved ad tokens concurrently
-post_details = post_detail_service.get_post_details_concurrently(tokens=ad_tokens, maximum_task=10)
+post_details = post_detail_service.get_post_details(token=ad_tokens, maximum_task=10)
 ```
 * Sequentially:
 ```python
 # Get details for the retrieved ad tokens sequentially
-post_details = post_detail_service.get_post_details_sequentially(tokens=ad_tokens, maximum_task=1)
+post_details = post_detail_service.get_post_details(token=ad_tokens, maximum_task=10)
 ```
 
 Parameters for get_post_details method:
