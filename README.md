@@ -81,7 +81,7 @@ The `AdFetcher` class provides a static method `get_ads` to retrieve ads from th
 ```python
 from pydivar import AdFetcher
 
-# Retrieve ads for the "apartment-rent" category in all cities, sorted by date.
+# Retrieve ads for the "apartment-rent" category in "tabriz" and "yazd" cities
 ads = AdFetcher.get_ads(category="light", sort="sort_date", cities=[16, 5], filters={"body_status": ["some-scratches", "paintless-dent-removal"]})
 
 # Print the retrieved ads
@@ -121,7 +121,7 @@ print(post_details)
 from pydivar import PostDetailService, AdFetcher
 
 # Use AdFetcher to get ads
-ads = AdFetcher.get_ads(category="light", sort="sort_date", cities=[16, 5], filters={"body_status": ["some-scratches", "paintless-dent-removal"]})
+ads = AdFetcher.get_ads(category="light", sort="sort_date", filters={"body_status": ["some-scratches", "paintless-dent-removal"]})
 
 # Get the tokens of the retrieved ads
 ad_tokens = [ad["token"] for ad in ads]
