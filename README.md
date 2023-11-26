@@ -33,7 +33,7 @@
 ## Where to get it
 The source code is currently hosted on GitHub at: `https://github.com/ali-ardakani/pydivar.git`
 
-Binary installers for the latest released version are available at the [Python Package Index (PyPI)](https://pypi.org/project/pandas).
+Binary installers for the latest released version are available at the [Python Package Index (PyPI)](https://pypi.org/project/pydivar).
     
 ```sh
 pip install pydivar
