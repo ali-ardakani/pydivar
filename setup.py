@@ -8,7 +8,7 @@ with open('README.md') as f:
 
 setup(
     name='pydivar',
-    version='1.0.0',
+    version='1.0.1',
     packages=find_packages(),
     install_requires=requirements,
     author='Ali Ardakani',
