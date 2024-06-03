@@ -67,7 +67,12 @@ class DivarAPI:
     @staticmethod
     def build_url(category, cities, sort=None, method="GET", filters={}):
         if method == "GET":
-            url = DivarAPI.BASE_URL + "iran/" + CATEGORIES.get(category)
+            if len(cities) == 1:
+                city_id = cities[0]
+                city = CITY_INFORMATION[city_id]["slug"]
+            else:
+                city = "iran"
+            url = DivarAPI.BASE_URL + f"{city}/" + CATEGORIES.get(category)
             url += "?cities=" + "%2C".join(cities)
             if sort:
                 url += "&sort=" + sort
