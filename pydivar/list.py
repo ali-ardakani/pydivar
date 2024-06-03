@@ -67,11 +67,9 @@ class DivarAPI:
     @staticmethod
     def build_url(category, cities, sort=None, method="GET", filters={}):
         if method == "GET":
-            if len(cities) == 1:
-                city_id = cities[0]
-                city = CITY_INFORMATION[city_id]["slug"]
-            else:
-                city = "iran"
+            city = "iran" if len(cities) != 1 else next(
+                (child['slug'] for province in CITY_INFORMATION for child in province['children'] if
+                 child['id'] == int(cities[0])), None)
             url = DivarAPI.BASE_URL + f"{city}/" + CATEGORIES.get(category)
             url += "?cities=" + "%2C".join(cities)
             if sort:
@@ -178,12 +176,12 @@ class AdFetcher:
         Returns:
         - ads (list): A list of ads retrieved from the Divar API.
         """
-
         sort = SortValidator.validate(sort)
         category = CategoryValidator.validate(category)
         cities = CitiesValidator.validate(cities)
 
         url = DivarAPI.build_url(category, cities, sort, method="GET", filters=filters)
+        print(url)
         ads, last_post_date = DivarClient.get(url)
         for ad in ads:
             yield ad
