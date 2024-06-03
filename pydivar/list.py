@@ -181,7 +181,6 @@ class AdFetcher:
         cities = CitiesValidator.validate(cities)
 
         url = DivarAPI.build_url(category, cities, sort, method="GET", filters=filters)
-        print(url)
         ads, last_post_date = DivarClient.get(url)
         for ad in ads:
             yield ad
